@@ -22,7 +22,7 @@ def main():
             players.append(player)
 
     #print("Oliot:")
-
+    players = sorted(players, key=lambda x: x.goals + x.assists, reverse=True)
     print("Players from FIN")
     for player in players:
         print(player)
