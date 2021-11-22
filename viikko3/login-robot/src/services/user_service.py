@@ -38,8 +38,6 @@ class UserService:
         if not username or not password:
             raise UserInputError("Username and password are required")
 
-        print(f"validate: username: {username}, password: {password}")
-
         if not (re.match("^[a-z]+$", username) and len(username) >= 3):
             raise AuthenticationError("Invalid username or password")
         
