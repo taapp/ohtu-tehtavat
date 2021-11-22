@@ -34,6 +34,28 @@ Register With Nonmatching Password And Password Confirmation
     Submit Info
     Register Should Fail With Message  Password and password confirmation do not match
 
+Login After Successful Registration
+    Set Username  antti
+    Set Password  antti123
+    Set Password Confirmation  antti123
+    Submit Info
+    Click Link  Continue to main page
+    Click Button  Logout
+    Set Username  antti
+    Set Password  antti123
+    Submit Credentials
+    Main Page Should Be Open
+
+Login After Failed Registration
+    Set Username  pekka
+    Set Password  pekka32
+    Set Password Confirmation  pekka32
+    Submit Info
+    Click Link  Login
+    Set Username  pekka
+    Set Password  pekka32
+    Submit Credentials
+    Page Should Contain  Invalid username or password
 
 *** Keywords ***
 Register Should Succeed
@@ -58,3 +80,6 @@ Set Password
 Set Password Confirmation
     [Arguments]  ${password}
     Input Text  password_confirmation  ${password}
+
+Submit Credentials
+    Click Button  Login
