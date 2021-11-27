@@ -115,7 +115,7 @@ class TestKauppa(unittest.TestCase):
         kauppa.maksa("1222")
 
         # ...toinen viite
-        pankki_mock.maksa.assert_called_with(ANY, ANY, 2)
+        pankki_mock.maksa.assert_called_with(ANY, ANY, 1)
 
         kauppa.aloita_ostokset()
         kauppa.lisaa_ostos(1)
