@@ -23,12 +23,7 @@ class IntJoukko:
         self.alkioiden_lkm = 0
 
     def kuuluu(self, n):
-        kuuluu_bool = False
-
-        for i in range(self.alkioiden_lkm):
-            if n == self.ljono[i]:
-                kuuluu_bool = True
-        return kuuluu_bool
+        return self.etsi_alkion_indeksi(n) != -1
 
     def lisaa(self, n):
         if not self.kuuluu(n):
