@@ -18,12 +18,9 @@ class IntJoukko:
         else:
             self.kasvatuskoko = kasvatuskoko
 
-        self._alusta_ljono(self.kapasiteetti)
+        self.ljono = [0] * self.kapasiteetti
 
         self.alkioiden_lkm = 0
-
-    def _alusta_ljono(self, koko):
-        self.ljono = [0] * koko
 
     def kuuluu(self, n):
         kuuluu_bool = False
@@ -34,43 +31,29 @@ class IntJoukko:
         return kuuluu_bool
 
     def lisaa(self, n):
-        if self.alkioiden_lkm == 0:
-            self.ljono[0] = n
-            self.alkioiden_lkm = self.alkioiden_lkm + 1
-            return True
-
         if not self.kuuluu(n):
             self.ljono[self.alkioiden_lkm] = n
             self.alkioiden_lkm = self.alkioiden_lkm + 1
 
             if self.alkioiden_lkm % len(self.ljono) == 0:
-                self.kasvata_kokoa()
-
+                self._kasvata_kokoa()
             return True
-
         return False
 
-    def kasvata_kokoa(self):
-        taulukko_old = self.ljono
-        self.kopioi_taulukko(self.ljono, taulukko_old)
-        self._alusta_ljono(self.alkioiden_lkm + self.kasvatuskoko)
-        self.kopioi_taulukko(taulukko_old, self.ljono)
+    def _kasvata_kokoa(self):
+        self.ljono = self.ljono + [0] * self.kasvatuskoko
 
     def poista(self, n):
         kohta = self.etsi_alkion_indeksi(n)
         if kohta != -1:
-            self.ljono[kohta] = 0
-            for j in range(kohta, self.alkioiden_lkm - 1):
-                apu = self.ljono[j]
-                self.ljono[j] = self.ljono[j + 1]
-                self.ljono[j + 1] = apu
-
+            self.ljono[kohta:(self.alkioiden_lkm-1)] = self.ljono[(kohta+1):self.alkioiden_lkm]
+            self.ljono[self.alkioiden_lkm] = 0
             self.alkioiden_lkm = self.alkioiden_lkm - 1
             return True
 
         return False
 
-    def etsi_alkion_indeksi(self,n):
+    def etsi_alkion_indeksi(self, n):
         indeksi = -1
         for i in range(self.alkioiden_lkm):
             if n == self.ljono[i]:
@@ -126,14 +109,11 @@ class IntJoukko:
         
         return joukko_uusi
 
-
     def __str__(self):
         if self.alkioiden_lkm == 0:
             return "{}"
-        else:
-            merkkijono = ""
-            for i in range(self.alkioiden_lkm - 1):
-                merkkijono = merkkijono + str(self.ljono[i])
-                merkkijono = merkkijono + ", "
-            merkkijono = merkkijono + str(self.ljono[self.alkioiden_lkm - 1])
-            return "{" + merkkijono + "}"
+        merkkijono = ""
+        for i in range(self.alkioiden_lkm - 1):
+            merkkijono += str(self.ljono[i]) + ", "
+        merkkijono += str(self.ljono[self.alkioiden_lkm - 1])
+        return "{" + merkkijono + "}"
