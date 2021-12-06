@@ -12,6 +12,7 @@ class Operaatio:
     def __init__(self, logiikka, syote):
         self.logiikka = logiikka
         self.syote = syote
+        self.arvo_edellinen = 0
 
     def lue_arvo(self):
         arvo = 0
@@ -22,13 +23,20 @@ class Operaatio:
         return arvo
 
     def suorita(self):
-        self.logiikka.tulos = 0
+        self.logiikka.aseta_arvo(0)
+
+    def kumoa(self):
+        self.logiikka.aseta_arvo(self.arvo_edellinen)
+
+    def tallenna_edellinen_arvo(self):
+        self.arvo_edellinen = self.logiikka.tulos
 
 class Nollaus(Operaatio):
     def __init__(self, logiikka, syote):
         super().__init__(logiikka, syote)
 
     def suorita(self):
+        self.tallenna_edellinen_arvo()
         self.logiikka.nollaa()
 
 class Summa(Operaatio):
@@ -36,6 +44,7 @@ class Summa(Operaatio):
         super().__init__(logiikka, syote)
 
     def suorita(self):
+        self.tallenna_edellinen_arvo()
         self.logiikka.plus(self.lue_arvo())
 
 class Erotus(Operaatio):
@@ -43,12 +52,15 @@ class Erotus(Operaatio):
         super().__init__(logiikka, syote)
 
     def suorita(self):
+        self.tallenna_edellinen_arvo()
         self.logiikka.miinus(self.lue_arvo())
 
 class Kumoa(Operaatio):
     def __init__(self, logiikka, syote):
         super().__init__(logiikka, syote)
 
+    def suorita(self):
+        self.tallenna_edellinen_arvo()
 
 class Kayttoliittyma:
     def __init__(self, sovelluslogiikka, root):
@@ -61,6 +73,7 @@ class Kayttoliittyma:
             Komento.NOLLAUS: Nollaus(sovelluslogiikka, self._lue_syote),
             Komento.KUMOA: Kumoa(sovelluslogiikka, self._lue_syote)
         }
+        self._komento_edellinen = None
     
     # ...
     def kaynnista(self):
@@ -111,6 +124,9 @@ class Kayttoliittyma:
     def _suorita_komento(self, komento):
         komento_olio = self._komennot[komento]
         komento_olio.suorita()
+        if komento==Komento.KUMOA:
+            self._komento_edellinen.kumoa()
+        self._komento_edellinen = komento_olio
         self._kumoa_painike["state"] = constants.NORMAL
 
         if self._sovelluslogiikka.tulos == 0:
